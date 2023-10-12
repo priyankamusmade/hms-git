@@ -1,0 +1,32 @@
+version: '3.9'
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql_container2
+    environment:
+      MYSQL_DATABASE: hms_database  
+      MYSQL_USER: admin 
+      MYSQL_PASSWORD: hospitalmanagement
+    ports:
+      - "3306:3306"
+    networks:
+      - ola_network
+
+
+  springboot:
+    build: .
+    container_name: hms_app
+    ports:
+      - "9090:9090"
+    depends_on:
+      - mysql
+    networks:
+      - ola_network
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://database-hms.cmdlxfdnrfju.ap-south-1.rds.amazonaws.com:3306/hms_database
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: hospitalmanagement
+
+networks:
+  ola_network:
+    driver: bridge
